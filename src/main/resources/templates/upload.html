@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SBOM Upload (CycloneDX)</title>
+    <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+</head>
+<body>
+    <h1>SBOM Upload for CycloneDX</h1>
+
+    <form hx-post="/ui/upload"
+          hx-target="#result"
+          hx-swap="innerHTML"
+          enctype="multipart/form-data"
+          method="post">
+        <input type="file" name="file" accept=".json,.xml" required>
+        <button type="submit">Upload</button>
+    </form>
+
+    <div id="result" th:fragment="resultFrag" th:text="${result}" style="margin-top:1rem;"></div>
+
+
+    <p style="margin-top:2rem;">
+        Alternate via API:
+        <code>curl -F "file=@bom.json" http://localhost:8080/api/sbom</code>
+    </p>
+</body>
+</html>

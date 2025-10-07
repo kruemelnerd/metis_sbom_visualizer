@@ -11,7 +11,7 @@ import java.util.Objects;
 import java.util.Set;
 
 @Node
-public class Version {
+public class SbomVersion {
 
     @Id @GeneratedValue
     private Long id;
@@ -21,15 +21,15 @@ public class Version {
     private String purl;
 
     @Relationship( type = "DEPENDS_ON", direction = Relationship.Direction.OUTGOING)
-    private Set<Version> dependsOn = new HashSet<Version>();
+    private Set<SbomVersion> dependsOn = new HashSet<SbomVersion>();
 
-    public void addDependency(Version version) {
-        dependsOn.add(version);
+    public void addDependency(SbomVersion sbomVersion) {
+        dependsOn.add(sbomVersion);
     }
 
-    public Version() {    }
+    public SbomVersion() {    }
 
-    public Version(String label, String purl) {
+    public SbomVersion(String label, String purl) {
         this.label = label;
         this.purl = purl;
     }
@@ -50,11 +50,11 @@ public class Version {
         this.purl = purl;
     }
 
-    public Set<Version> getDependsOn() {
+    public Set<SbomVersion> getDependsOn() {
         return dependsOn;
     }
 
-    public void setDependsOn(Set<Version> dependsOn) {
+    public void setDependsOn(Set<SbomVersion> dependsOn) {
         this.dependsOn = dependsOn;
     }
 
@@ -62,8 +62,8 @@ public class Version {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
 
-        Version version = (Version) o;
-        return Objects.equals(id, version.id) && Objects.equals(label, version.label) && Objects.equals(purl, version.purl) && Objects.equals(dependsOn, version.dependsOn);
+        SbomVersion sbomVersion = (SbomVersion) o;
+        return Objects.equals(id, sbomVersion.id) && Objects.equals(label, sbomVersion.label) && Objects.equals(purl, sbomVersion.purl) && Objects.equals(dependsOn, sbomVersion.dependsOn);
     }
 
     @Override

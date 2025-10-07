@@ -19,7 +19,7 @@ public class SbomComponent {
     private String name;
 
     @Relationship(type = "HAS_VERSION")
-    private Set<Version> versions = new HashSet<>();
+    private Set<SbomVersion> sbomVersions = new HashSet<>();
 
     public SbomComponent() {}
 
@@ -35,12 +35,12 @@ public class SbomComponent {
         return name;
     }
 
-    public Set<Version> getVersions() {
-        return versions;
+    public Set<SbomVersion> getVersions() {
+        return sbomVersions;
     }
 
-    public void addVersion(Version version) {
-        this.versions.add(version);
+    public void addVersion(SbomVersion sbomVersion) {
+        this.sbomVersions.add(sbomVersion);
     }
 
     @Override
@@ -48,14 +48,14 @@ public class SbomComponent {
         if (o == null || getClass() != o.getClass()) return false;
 
         SbomComponent sbomComponent = (SbomComponent) o;
-        return Objects.equals(id, sbomComponent.id) && Objects.equals(name, sbomComponent.name) && Objects.equals(versions, sbomComponent.versions);
+        return Objects.equals(id, sbomComponent.id) && Objects.equals(name, sbomComponent.name) && Objects.equals(sbomVersions, sbomComponent.sbomVersions);
     }
 
     @Override
     public int hashCode() {
         int result = Objects.hashCode(id);
         result = 31 * result + Objects.hashCode(name);
-        result = 31 * result + Objects.hashCode(versions);
+        result = 31 * result + Objects.hashCode(sbomVersions);
         return result;
     }
 }

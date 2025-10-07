@@ -2,7 +2,7 @@ package de.kruemelnerd.learning_neo4j;
 
 
 import de.kruemelnerd.learning_neo4j.domain.SbomComponent;
-import de.kruemelnerd.learning_neo4j.domain.Version;
+import de.kruemelnerd.learning_neo4j.domain.SbomVersion;
 import de.kruemelnerd.learning_neo4j.repository.SbomComponentRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -19,7 +19,7 @@ public class DemoData implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         SbomComponent sbomComponent = new SbomComponent("example-lib");
-        sbomComponent.addVersion(new Version("1.0.0", "miau"));
+        sbomComponent.addVersion(new SbomVersion("1.0.0", "miau"));
         sbomComponentRepository.save(sbomComponent);
     }
 }

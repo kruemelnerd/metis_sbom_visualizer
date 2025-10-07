@@ -58,4 +58,13 @@ public class SbomComponent {
         result = 31 * result + Objects.hashCode(sbomVersions);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "SbomComponent{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", sbomVersions=" + sbomVersions.stream().toString() +
+                '}';
+    }
 }

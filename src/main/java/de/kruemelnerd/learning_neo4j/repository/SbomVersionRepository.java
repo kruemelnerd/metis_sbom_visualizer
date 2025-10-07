@@ -12,4 +12,10 @@ public interface SbomVersionRepository extends Neo4jRepository<SbomVersion, Long
 
     @Query("MATCH (v:Version {label: $label}) RETURN v")
     Optional<SbomVersion> findByLabel(String label);
+
+    @Query("""
+      MATCH (c:SbomComponent {name: $componentName})-[:HAS_VERSION]->(v:SbomVersion {label: $label})
+      RETURN v LIMIT 1
+    """)
+    Optional<SbomVersion> findByComponentAndLabel(String componentName, String label);
 }

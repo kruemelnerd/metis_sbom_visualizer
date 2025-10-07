@@ -74,4 +74,14 @@ public class SbomVersion {
         result = 31 * result + Objects.hashCode(dependsOn);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "SbomVersion{" +
+                "id=" + id +
+                ", label='" + label + '\'' +
+                ", purl='" + purl + '\'' +
+                ", dependsOn=" + dependsOn +
+                '}';
+    }
 }

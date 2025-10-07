@@ -1,25 +1,25 @@
 package de.kruemelnerd.learning_neo4j;
 
 
-import de.kruemelnerd.learning_neo4j.domain.Artefakt;
+import de.kruemelnerd.learning_neo4j.domain.SbomComponent;
 import de.kruemelnerd.learning_neo4j.domain.Version;
-import de.kruemelnerd.learning_neo4j.repository.ComponentRepository;
+import de.kruemelnerd.learning_neo4j.repository.SbomComponentRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 @Component
 public class DemoData implements CommandLineRunner {
 
-    private final ComponentRepository componentRepository;
+    private final SbomComponentRepository sbomComponentRepository;
 
-    public DemoData(ComponentRepository componentRepository) {
-        this.componentRepository = componentRepository;
+    public DemoData(SbomComponentRepository sbomComponentRepository) {
+        this.sbomComponentRepository = sbomComponentRepository;
     }
 
     @Override
     public void run(String... args) throws Exception {
-        Artefakt artefakt = new Artefakt("example-lib");
-        artefakt.addVersion(new Version("1.0.0", "miau"));
-        componentRepository.save(artefakt);
+        SbomComponent sbomComponent = new SbomComponent("example-lib");
+        sbomComponent.addVersion(new Version("1.0.0", "miau"));
+        sbomComponentRepository.save(sbomComponent);
     }
 }

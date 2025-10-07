@@ -10,7 +10,7 @@ import java.util.Objects;
 import java.util.Set;
 
 @Node
-public class Artefakt {
+public class SbomComponent {
 
     @Id
     @GeneratedValue
@@ -21,9 +21,9 @@ public class Artefakt {
     @Relationship(type = "HAS_VERSION")
     private Set<Version> versions = new HashSet<>();
 
-    public Artefakt() {}
+    public SbomComponent() {}
 
-    public Artefakt(String name) {
+    public SbomComponent(String name) {
         this.name = name;
     }
 
@@ -47,8 +47,8 @@ public class Artefakt {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
 
-        Artefakt artefakt = (Artefakt) o;
-        return Objects.equals(id, artefakt.id) && Objects.equals(name, artefakt.name) && Objects.equals(versions, artefakt.versions);
+        SbomComponent sbomComponent = (SbomComponent) o;
+        return Objects.equals(id, sbomComponent.id) && Objects.equals(name, sbomComponent.name) && Objects.equals(versions, sbomComponent.versions);
     }
 
     @Override

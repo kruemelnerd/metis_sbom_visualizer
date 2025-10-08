@@ -1,5 +1,6 @@
 package de.kruemelnerd.learning_neo4j.controller;
 
+import de.kruemelnerd.learning_neo4j.service.SbomIngestService;
 import de.kruemelnerd.learning_neo4j.service.SbomService;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -10,14 +11,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Map;
+
 @Controller
 @RequestMapping("/ui")
 public class UiController {
 
     private final SbomService sbomService;
+    private final SbomIngestService sbomIngestService;
 
-    public UiController(SbomService sbomService) {
+    public UiController(SbomService sbomService, SbomIngestService sbomIngestService) {
         this.sbomService = sbomService;
+        this.sbomIngestService = sbomIngestService;
     }
 
     @GetMapping("/upload")
@@ -25,11 +30,10 @@ public class UiController {
         return "upload";
     }
 
+
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public String handleUpload(@RequestParam("file") MultipartFile file, Model model) throws Exception {
-        var stats = sbomService.parseOnly(file.getInputStream());
-        model.addAttribute("msg", "Parsing OK: " + stats);
-        model.addAttribute("result", "Parsing OK: " + stats);
-        return "upload";
+    public Map<String, Object> handleUpload(@RequestParam("file") MultipartFile file, Model model) throws Exception {
+        var stats = sbomIngestService.ingest(file.getInputStream());
+        return Map.of("status", "ok", "stats", stats);
     }
 }

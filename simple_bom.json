@@ -27,9 +27,18 @@
       "version": "2.2.0",
       "purl": "pkg:example/lib-foo@2.2.0",
       "hashes": [
-        { "alg": "SHA-256", "content": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef" }
+        {
+          "alg": "SHA-256",
+          "content": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+        }
       ],
-      "licenses": [{ "license": { "id": "MIT" } }]
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ]
     },
     {
       "bom-ref": "pkg:example/lib-bar@1.0.0",
@@ -38,9 +47,18 @@
       "version": "1.0.0",
       "purl": "pkg:example/lib-bar@1.0.0",
       "hashes": [
-        { "alg": "SHA-256", "content": "abcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcd" }
+        {
+          "alg": "SHA-256",
+          "content": "abcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcd"
+        }
       ],
-      "licenses": [{ "license": { "id": "Apache-2.0" } }]
+      "licenses": [
+        {
+          "license": {
+            "id": "Apache-2.0"
+          }
+        }
+      ]
     },
     {
       "bom-ref": "pkg:example/lib-baz@3.1.0",
@@ -49,9 +67,18 @@
       "version": "3.1.0",
       "purl": "pkg:example/lib-baz@3.1.0",
       "hashes": [
-        { "alg": "SHA-256", "content": "fedcbafedcbafedcbafedcbafedcbafedcbafedcbafedcbafedcbafedcbafedc" }
+        {
+          "alg": "SHA-256",
+          "content": "fedcbafedcbafedcbafedcbafedcbafedcbafedcbafedcbafedcbafedcbafedc"
+        }
       ],
-      "licenses": [{ "license": { "id": "BSD-3-Clause" } }]
+      "licenses": [
+        {
+          "license": {
+            "id": "BSD-3-Clause"
+          }
+        }
+      ]
     },
     {
       "bom-ref": "pkg:example/lib-qux@0.9.0",
@@ -60,9 +87,38 @@
       "version": "0.9.0",
       "purl": "pkg:example/lib-qux@0.9.0",
       "hashes": [
-        { "alg": "SHA-256", "content": "1111111111111111111111111111111111111111111111111111111111111111" }
+        {
+          "alg": "SHA-256",
+          "content": "1111111111111111111111111111111111111111111111111111111111111111"
+        }
       ],
-      "licenses": [{ "license": { "id": "GPL-3.0-or-later" } }]
+      "licenses": [
+        {
+          "license": {
+            "id": "GPL-3.0-or-later"
+          }
+        }
+      ]
+    },
+    {
+      "bom-ref": "pkg:example/lib-qux@1.0.0",
+      "type": "library",
+      "name": "lib-qux",
+      "version": "0.9.0",
+      "purl": "pkg:example/lib-qux@1.0.0",
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "1111111111111111111111111111111111111111111111111111111111111111"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "GPL-3.0-or-later"
+          }
+        }
+      ]
     },
     {
       "bom-ref": "pkg:example/lib-utils@1.0.0",
@@ -71,9 +127,18 @@
       "version": "1.0.0",
       "purl": "pkg:example/lib-utils@1.0.0",
       "hashes": [
-        { "alg": "SHA-256", "content": "2222222222222222222222222222222222222222222222222222222222222222" }
+        {
+          "alg": "SHA-256",
+          "content": "2222222222222222222222222222222222222222222222222222222222222222"
+        }
       ],
-      "licenses": [{ "license": { "id": "MIT" } }]
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ]
     },
     {
       "bom-ref": "pkg:example/lib-core@4.5.0",
@@ -82,9 +147,18 @@
       "version": "4.5.0",
       "purl": "pkg:example/lib-core@4.5.0",
       "hashes": [
-        { "alg": "SHA-256", "content": "3333333333333333333333333333333333333333333333333333333333333333" }
+        {
+          "alg": "SHA-256",
+          "content": "3333333333333333333333333333333333333333333333333333333333333333"
+        }
       ],
-      "licenses": [{ "license": { "id": "Apache-2.0" } }]
+      "licenses": [
+        {
+          "license": {
+            "id": "Apache-2.0"
+          }
+        }
+      ]
     }
   ],
   "dependencies": [
@@ -93,6 +167,12 @@
       "dependsOn": [
         "pkg:example/lib-foo@2.2.0",
         "pkg:example/lib-bar@1.0.0"
+      ]
+    },
+    {
+      "ref": "pkg:example/lib-foo@2.2.0",
+      "dependsOn": [
+        "pkg:example/lib-qux@1.0.0"
       ]
     },
     {

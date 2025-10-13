@@ -13,25 +13,41 @@ import java.util.Set;
 @Node
 public class SbomVersion {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     private Long id;
 
     private String label;
 
     private String purl;
 
-    @Relationship( type = "DEPENDS_ON", direction = Relationship.Direction.OUTGOING)
+    private String version;
+
+    @Relationship(type = "DEPENDS_ON", direction = Relationship.Direction.OUTGOING)
     private Set<SbomVersion> dependsOn = new HashSet<SbomVersion>();
 
     public void addDependency(SbomVersion sbomVersion) {
         dependsOn.add(sbomVersion);
     }
 
-    public SbomVersion() {    }
+    public SbomVersion() {
+    }
 
-    public SbomVersion(String label, String purl) {
+    public SbomVersion(String label, String version) {
+        this.label = label;
+        this.version = version;
+        this.purl = label + ":" + version;
+    }
+
+
+    public SbomVersion(String label, String purl, String version) {
         this.label = label;
         this.purl = purl;
+        this.version = version;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getLabel() {
@@ -50,6 +66,14 @@ public class SbomVersion {
         this.purl = purl;
     }
 
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
     public Set<SbomVersion> getDependsOn() {
         return dependsOn;
     }
@@ -62,8 +86,8 @@ public class SbomVersion {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
 
-        SbomVersion sbomVersion = (SbomVersion) o;
-        return Objects.equals(id, sbomVersion.id) && Objects.equals(label, sbomVersion.label) && Objects.equals(purl, sbomVersion.purl) && Objects.equals(dependsOn, sbomVersion.dependsOn);
+        SbomVersion that = (SbomVersion) o;
+        return Objects.equals(id, that.id) && Objects.equals(label, that.label) && Objects.equals(purl, that.purl) && Objects.equals(version, that.version) && Objects.equals(dependsOn, that.dependsOn);
     }
 
     @Override
@@ -71,6 +95,7 @@ public class SbomVersion {
         int result = Objects.hashCode(id);
         result = 31 * result + Objects.hashCode(label);
         result = 31 * result + Objects.hashCode(purl);
+        result = 31 * result + Objects.hashCode(version);
         result = 31 * result + Objects.hashCode(dependsOn);
         return result;
     }
@@ -81,6 +106,7 @@ public class SbomVersion {
                 "id=" + id +
                 ", label='" + label + '\'' +
                 ", purl='" + purl + '\'' +
+                ", version='" + version + '\'' +
                 ", dependsOn=" + dependsOn +
                 '}';
     }

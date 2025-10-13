@@ -92,14 +92,17 @@ public class SbomIngestService {
                         to = synthesizeVersionFromRef(child.getRef());
                         if (to != null) {
                             versionByRef.put(child.getRef(), to);
-                        }else {
+                        } else {
                             continue; // Ziel unbekannt → Kante auslassen
                         }
                     }
+                    //TODO: Hier muss noch geprüft werden, ob es schon eine Verbindung zwischen FROM und TO gibt.
+                    // In diesem Fall ist eine erneute Verbindung nicht nötig.
+
                     if (!from.getDependsOn().contains(to)) {
-                        from.addDependency(to);
-                        versionRepository.save(from);
-                        createdDeps++;
+
+                        boolean created = versionRepository.mergeDependsOn(from.getId(), to.getId());
+                        if (created) createdDeps++;
                     }
                 }
 
@@ -123,8 +126,9 @@ public class SbomIngestService {
     private record UpsertResult(SbomVersion version, boolean createdComponent, boolean createdVersion) {
     }
 
-    private UpsertResult upsertVersion(String componentName, String versionLabel, String purl) {
-        boolean createdComponent = false, createdVersion = false;
+    private UpsertResult upsertVersion(String componentName, String versionNumber, String purl) {
+        boolean createdComponent = false;
+        boolean createdVersion = false;
 
         SbomComponent component = componentRepository.findByName(componentName).orElse(null);
         if (component == null) {
@@ -133,9 +137,9 @@ public class SbomIngestService {
             createdComponent = true;
         }
 
-        SbomVersion version = versionRepository.findByComponentAndLabel(componentName, versionLabel).orElse(null);
+        SbomVersion version = versionRepository.findByComponentAndVersion(componentName, versionNumber).orElse(null);
         if (version == null) {
-            version = new SbomVersion(componentName, versionLabel);
+            version = new SbomVersion(componentName, versionNumber);
             component.addVersion(version);
             componentRepository.save(component);
             createdVersion = true;

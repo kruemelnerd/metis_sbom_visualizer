@@ -21,7 +21,8 @@ public class SbomComponent {
     @Relationship(type = "HAS_VERSION")
     private Set<SbomVersion> sbomVersions = new HashSet<>();
 
-    public SbomComponent() {}
+    public SbomComponent() {
+    }
 
     public SbomComponent(String name) {
         this.name = name;

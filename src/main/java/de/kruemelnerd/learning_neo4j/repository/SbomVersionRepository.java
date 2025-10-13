@@ -14,8 +14,18 @@ public interface SbomVersionRepository extends Neo4jRepository<SbomVersion, Long
     Optional<SbomVersion> findByLabel(String label);
 
     @Query("""
-      MATCH (c:SbomComponent {name: $componentName})-[:HAS_VERSION]->(v:SbomVersion {label: $label})
-      RETURN v LIMIT 1
-    """)
-    Optional<SbomVersion> findByComponentAndLabel(String componentName, String label);
+              MATCH (c:SbomComponent {name: $componentName})-[:HAS_VERSION]->(v:SbomVersion {version: $version})
+              RETURN v LIMIT 1
+            """)
+    Optional<SbomVersion> findByComponentAndVersion(String componentName, String version);
+
+    @Query("""
+            MATCH (v1:SbomVersion) WHERE id(v1) = $fromId
+            MATCH (v2:SbomVersion) WHERE id(v2) = $toId
+            MERGE (v1)-[r:DEPENDS_ON]->(v2)
+            ON CREATE SET r._createdNow = true
+            ON MATCH  SET r._createdNow = false
+            RETURN r._createdNow AS createdNow;
+            """)
+    boolean mergeDependsOn(long fromId, long toId);
 }

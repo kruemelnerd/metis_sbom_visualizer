@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>de.kruemelnerd</groupId>
-    <artifactId>learning_neo4j</artifactId>
+    <artifactId>metis</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>learning_neo4j</name>
-    <description>learning_neo4j</description>
+    <name>Metis - SBOM VISUALIZER</name>
+    <description>Metis - SBOM VISULIZER</description>
     <url/>
     <licenses>
         <license/>

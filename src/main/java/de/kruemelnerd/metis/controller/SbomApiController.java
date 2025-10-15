@@ -1,6 +1,6 @@
-package de.kruemelnerd.learning_neo4j.controller;
+package de.kruemelnerd.metis.controller;
 
-import de.kruemelnerd.learning_neo4j.service.SbomService;
+import de.kruemelnerd.metis.service.SbomService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;

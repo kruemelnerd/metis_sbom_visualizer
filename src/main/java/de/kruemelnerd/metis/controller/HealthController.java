@@ -1,4 +1,4 @@
-package de.kruemelnerd.learning_neo4j.controller;
+package de.kruemelnerd.metis.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;

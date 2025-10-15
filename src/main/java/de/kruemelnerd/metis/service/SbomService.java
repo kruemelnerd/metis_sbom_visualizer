@@ -1,4 +1,4 @@
-package de.kruemelnerd.learning_neo4j.service;
+package de.kruemelnerd.metis.service;
 
 import org.cyclonedx.model.Bom;
 import org.cyclonedx.model.Component;

@@ -1,7 +1,7 @@
-package de.kruemelnerd.learning_neo4j;
+package de.kruemelnerd.metis;
 
 
-import de.kruemelnerd.learning_neo4j.repository.SbomComponentRepository;
+import de.kruemelnerd.metis.repository.SbomComponentRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;

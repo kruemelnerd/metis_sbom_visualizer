@@ -1,6 +1,6 @@
-package de.kruemelnerd.learning_neo4j.repository;
+package de.kruemelnerd.metis.repository;
 
-import de.kruemelnerd.learning_neo4j.domain.SbomComponent;
+import de.kruemelnerd.metis.domain.SbomComponent;
 import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.stereotype.Repository;
 

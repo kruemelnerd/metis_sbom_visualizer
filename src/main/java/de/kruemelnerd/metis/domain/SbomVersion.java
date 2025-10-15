@@ -1,4 +1,4 @@
-package de.kruemelnerd.learning_neo4j.domain;
+package de.kruemelnerd.metis.domain;
 
 
 import org.springframework.data.neo4j.core.schema.GeneratedValue;

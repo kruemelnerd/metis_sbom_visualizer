@@ -1,4 +1,4 @@
-package de.kruemelnerd.learning_neo4j;
+package de.kruemelnerd.metis;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

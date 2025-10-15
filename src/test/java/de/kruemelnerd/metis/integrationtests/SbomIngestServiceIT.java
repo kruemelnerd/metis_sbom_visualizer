@@ -1,7 +1,6 @@
-package de.kruemelnerd.learning_neo4j.integrationtests;
+package de.kruemelnerd.metis.integrationtests;
 
-import de.kruemelnerd.learning_neo4j.service.SbomIngestService;
-import org.junit.Ignore;
+import de.kruemelnerd.metis.service.SbomIngestService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -1,9 +1,9 @@
-package de.kruemelnerd.learning_neo4j.service;
+package de.kruemelnerd.metis.service;
 
-import de.kruemelnerd.learning_neo4j.domain.SbomComponent;
-import de.kruemelnerd.learning_neo4j.domain.SbomVersion;
-import de.kruemelnerd.learning_neo4j.repository.SbomComponentRepository;
-import de.kruemelnerd.learning_neo4j.repository.SbomVersionRepository;
+import de.kruemelnerd.metis.domain.SbomComponent;
+import de.kruemelnerd.metis.domain.SbomVersion;
+import de.kruemelnerd.metis.repository.SbomComponentRepository;
+import de.kruemelnerd.metis.repository.SbomVersionRepository;
 import org.cyclonedx.model.Bom;
 import org.cyclonedx.model.Dependency;
 import org.cyclonedx.parsers.BomParserFactory;

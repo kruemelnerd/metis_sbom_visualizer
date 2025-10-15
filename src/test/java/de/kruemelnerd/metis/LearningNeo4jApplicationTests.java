@@ -1,4 +1,4 @@
-package de.kruemelnerd.learning_neo4j;
+package de.kruemelnerd.metis;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

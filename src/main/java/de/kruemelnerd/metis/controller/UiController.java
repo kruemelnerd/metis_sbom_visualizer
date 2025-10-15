@@ -1,7 +1,7 @@
-package de.kruemelnerd.learning_neo4j.controller;
+package de.kruemelnerd.metis.controller;
 
-import de.kruemelnerd.learning_neo4j.service.SbomIngestService;
-import de.kruemelnerd.learning_neo4j.service.SbomService;
+import de.kruemelnerd.metis.service.SbomIngestService;
+import de.kruemelnerd.metis.service.SbomService;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

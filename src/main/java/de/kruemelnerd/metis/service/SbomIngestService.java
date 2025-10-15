@@ -96,9 +96,6 @@ public class SbomIngestService {
                             continue; // Ziel unbekannt → Kante auslassen
                         }
                     }
-                    //TODO: Hier muss noch geprüft werden, ob es schon eine Verbindung zwischen FROM und TO gibt.
-                    // In diesem Fall ist eine erneute Verbindung nicht nötig.
-
                     if (!from.getDependsOn().contains(to)) {
 
                         boolean created = versionRepository.mergeDependsOn(from.getId(), to.getId());

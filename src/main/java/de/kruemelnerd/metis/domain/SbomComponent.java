@@ -1,5 +1,6 @@
 package de.kruemelnerd.metis.domain;
 
+import org.cyclonedx.model.Component;
 import org.springframework.data.neo4j.core.schema.GeneratedValue;
 import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.Node;
@@ -18,6 +19,8 @@ public class SbomComponent {
 
     private String name;
 
+    private Component.Type type;
+
     @Relationship(type = "HAS_VERSION")
     private Set<SbomVersion> sbomVersions = new HashSet<>();
 
@@ -28,12 +31,21 @@ public class SbomComponent {
         this.name = name;
     }
 
+    public SbomComponent(String name, Component.Type type) {
+        this.name = name;
+        this.type = type;
+    }
+
     public Long getId() {
         return id;
     }
 
     public String getName() {
         return name;
+    }
+
+    public Component.Type getType() {
+        return type;
     }
 
     public Set<SbomVersion> getVersions() {
@@ -48,24 +60,16 @@ public class SbomComponent {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
 
-        SbomComponent sbomComponent = (SbomComponent) o;
-        return Objects.equals(id, sbomComponent.id) && Objects.equals(name, sbomComponent.name) && Objects.equals(sbomVersions, sbomComponent.sbomVersions);
+        SbomComponent that = (SbomComponent) o;
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(type, that.type) && Objects.equals(sbomVersions, that.sbomVersions);
     }
 
     @Override
     public int hashCode() {
         int result = Objects.hashCode(id);
         result = 31 * result + Objects.hashCode(name);
+        result = 31 * result + Objects.hashCode(type);
         result = 31 * result + Objects.hashCode(sbomVersions);
         return result;
-    }
-
-    @Override
-    public String toString() {
-        return "SbomComponent{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", sbomVersions=" + sbomVersions.stream().toString() +
-                '}';
     }
 }

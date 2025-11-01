@@ -120,6 +120,7 @@
             .attr("stroke-width", 1.5);
 
         // 🔵 Knoten-Layer
+        const color = d => d.type === "APPLICATION" ? "#7c3aed" : "#4682b4";
         const node = svg.append("g")
             .attr("stroke", "#fff")
             .attr("stroke-width", 1.5)
@@ -128,7 +129,7 @@
             .enter()
             .append("circle")
             .attr("r", 8)
-            .attr("fill", "#4682b4")
+            .attr("fill", color)
             .call(drag(simulation));
 
         // 🏷️ Labels

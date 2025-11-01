@@ -5,7 +5,9 @@ import de.kruemelnerd.metis.domain.SbomVersion;
 import de.kruemelnerd.metis.repository.SbomComponentRepository;
 import de.kruemelnerd.metis.repository.SbomVersionRepository;
 import org.cyclonedx.model.Bom;
+import org.cyclonedx.model.Component;
 import org.cyclonedx.model.Dependency;
+import org.cyclonedx.model.ExternalReference;
 import org.cyclonedx.parsers.BomParserFactory;
 import org.cyclonedx.parsers.Parser;
 import org.springframework.stereotype.Service;
@@ -42,7 +44,7 @@ public class SbomIngestService {
         // Root-Komponente aus metadata.component berücksichtigen
         if (bom.getMetadata() != null && bom.getMetadata().getComponent() != null) {
             var root = bom.getMetadata().getComponent();
-            var up = upsertVersion(root.getName(), root.getVersion(), root.getPurl());
+            var up = upsertVersion(root.getName(), root.getVersion(), root.getPurl(), root.getType());
             createdComponents += up.createdComponent ? 1 : 0;
             reusedComponents += up.createdComponent ? 0 : 1;
             createdVersions += up.createdVersion ? 1 : 0;
@@ -58,7 +60,8 @@ public class SbomIngestService {
             for (org.cyclonedx.model.Component cdx : bom.getComponents()) {
                 var up = upsertVersion(safe(cdx.getName(), "unknown"),
                         safe(cdx.getVersion(), "unspecified"),
-                        cdx.getPurl());
+                        cdx.getPurl(),
+                        cdx.getType());
                 createdComponents += up.createdComponent ? 1 : 0;
                 reusedComponents += up.createdComponent ? 0 : 1;
                 createdVersions += up.createdVersion ? 1 : 0;
@@ -75,27 +78,19 @@ public class SbomIngestService {
             for (Dependency dependency : bom.getDependencies()) {
                 SbomVersion from = versionByRef.get(dependency.getRef());
                 if (from == null) {
-                    from = synthesizeVersionFromRef(dependency.getRef());
-                    if (from != null) {
-                        versionByRef.put(dependency.getRef(), from);
-                    } else {
-                        // keine Infos → Kanten von unbekanntem Knoten auslassen
-                        continue;
-                    }
+                    // keine Infos → Kanten von unbekanntem Knoten auslassen
+                    continue;
                 }
+
 
                 if (dependency.getRef() == null) continue;
 
                 for (Dependency child : dependency.getDependencies()) {
                     SbomVersion to = versionByRef.get(child.getRef());
                     if (to == null) {
-                        to = synthesizeVersionFromRef(child.getRef());
-                        if (to != null) {
-                            versionByRef.put(child.getRef(), to);
-                        } else {
-                            continue; // Ziel unbekannt → Kante auslassen
-                        }
+                        continue; // Ziel unbekannt → Kante auslassen
                     }
+
                     if (!from.getDependsOn().contains(to)) {
 
                         boolean created = versionRepository.mergeDependsOn(from.getId(), to.getId());
@@ -123,13 +118,13 @@ public class SbomIngestService {
     private record UpsertResult(SbomVersion version, boolean createdComponent, boolean createdVersion) {
     }
 
-    private UpsertResult upsertVersion(String componentName, String versionNumber, String purl) {
+    private UpsertResult upsertVersion(String componentName, String versionNumber, String purl, Component.Type type) {
         boolean createdComponent = false;
         boolean createdVersion = false;
 
         SbomComponent component = componentRepository.findByName(componentName).orElse(null);
         if (component == null) {
-            component = new SbomComponent(componentName);
+            component = new SbomComponent(componentName, type);
             component = componentRepository.save(component);
             createdComponent = true;
         }
@@ -148,29 +143,8 @@ public class SbomIngestService {
         return new UpsertResult(version, createdComponent, createdVersion);
     }
 
-
-    /**
-     * Sehr einfacher PURL/BOM-Ref-Parser:
-     * - Erwartet Strings wie "pkg:example/name@1.2.3"
-     * - Fällt zurück auf label == ganze Ref, wenn nichts extrahierbar ist
-     */
-    private SbomVersion synthesizeVersionFromRef(String ref) {
-        if (ref == null || ref.isBlank()) return null;
-        // Nur purl-ähnliche Refs betrachten
-        if (ref.startsWith("pkg:")) {
-            String name = ref;
-            String version = "unspecified";
-            int at = ref.lastIndexOf('@');
-            if (at > 0 && at < ref.length() - 1) {
-                version = ref.substring(at + 1);
-                // Name grob bestimmen (zwischen letztem '/' und '@')
-                int slash = ref.lastIndexOf('/', at);
-                name = (slash >= 0 && slash < at) ? ref.substring(slash + 1, at) : ref.substring(4, at); // 4 = len("pkg:")
-            }
-            return upsertVersion(name, version, ref).version;
-        }
-        // Nicht parsebar → optional einen Platzhalter anlegen:
-        // return upsertVersion(ref, "unspecified", null).version;
-        return null; // oder bewusst ignorieren
+    private static String cdxTypeToString(org.cyclonedx.model.Component.Type t) {
+        return t == null ? "unknown" : t.getTypeName().toLowerCase(); // "application", "library", ...
     }
+
 }

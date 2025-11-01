@@ -44,8 +44,8 @@ public class GraphApi {
                       WITH v,w,r LIMIT $limit
                       OPTIONAL MATCH (c1:SbomComponent)-[:HAS_VERSION]->(v)
                       OPTIONAL MATCH (c2:SbomComponent)-[:HAS_VERSION]->(w)
-                      RETURN id(v) AS sid, coalesce(c1.name,'?') AS sComp, v.label AS sVer,
-                             id(w) AS tid, coalesce(c2.name,'?') AS tComp, w.label AS tVer
+                      RETURN id(v) AS sid, coalesce(c1.name,'?') AS sComp, v.label AS sVer, c1.type AS sType,
+                             id(w) AS tid, coalesce(c2.name,'?') AS tComp, w.label AS tVer, c2.type AS tType
                     """;
 
 
@@ -66,11 +66,11 @@ public class GraphApi {
                     MATCH (tv:SbomVersion) WHERE id(tv)=tid
                     OPTIONAL MATCH (c1:SbomComponent)-[:HAS_VERSION]->(sv)
                     OPTIONAL MATCH (c2:SbomComponent)-[:HAS_VERSION]->(tv)
-                    WITH sid, coalesce(c1.name,'?') AS sComp, sv.label AS sVer,
-                         tid, coalesce(c2.name,'?') AS tComp, tv.label AS tVer
-                    WITH DISTINCT sid, sComp, sVer, tid, tComp, tVer
+                    WITH sid, coalesce(c1.name,'?') AS sComp, sv.label AS sVer, c1.type AS sType,
+                         tid, coalesce(c2.name,'?') AS tComp, tv.label AS tVer, c2.type AS tType
+                    WITH DISTINCT sid, sComp, sVer, sType, tid, tComp, tVer, tType
                     LIMIT $limit
-                    RETURN sid, sComp, sVer, tid, tComp, tVer
+                    RETURN sid, sComp, sVer, sType, tid, tComp, tVer, tType
                     """;
 
         }
@@ -99,17 +99,27 @@ public class GraphApi {
             Long tId = ((Number) tObj).longValue();
 
             String sComp = String.valueOf(row.getOrDefault("sComp", "?"));
-            String sVer  = String.valueOf(row.getOrDefault("sVer",  ""));
+            String sVer = String.valueOf(row.getOrDefault("sVer", ""));
 
             String tComp = String.valueOf(row.getOrDefault("tComp", "?"));
-            String tVer  = String.valueOf(row.getOrDefault("tVer",  ""));
+            String tVer = String.valueOf(row.getOrDefault("tVer", ""));
+
+
+            String sType = String.valueOf(row.getOrDefault("sType", "unknown"));
+            String tType = String.valueOf(row.getOrDefault("tType", "unknown"));
 
 
             String sLabel = sComp + ":" + sVer;
             String tLabel = tComp + ":" + tVer;
 
-            if (!idx.containsKey(sId)) { idx.put(sId, i++); nodes.add(Map.of("id", Long.toString(sId), "label", sLabel)); }
-            if (!idx.containsKey(tId)) { idx.put(tId, i++); nodes.add(Map.of("id", Long.toString(tId), "label", tLabel)); }
+            if (!idx.containsKey(sId)) {
+                idx.put(sId, i++);
+                nodes.add(Map.of("id", Long.toString(sId), "label", sLabel, "type", sType));
+            }
+            if (!idx.containsKey(tId)) {
+                idx.put(tId, i++);
+                nodes.add(Map.of("id", Long.toString(tId), "label", tLabel, "type", tType));
+            }
 
             links.add(Map.of("source", Long.toString(sId), "target", Long.toString(tId)));
         }

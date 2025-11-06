@@ -103,6 +103,13 @@
             .attr("height", height)
             .style("border", "1px solid #ccc");
 
+        svg.append("defs").append("marker")
+            .attr("id", "arrow").attr("viewBox", "0 -5 10 10")
+            .attr("refX", 18).attr("refY", 0)
+            .attr("markerWidth", 6).attr("markerHeight", 6)
+            .attr("orient", "auto")
+            .append("path").attr("d", "M0,-5L10,0L0,5").attr("fill", "#999");
+
         // 🧠 Simulation (physikalisches Layout)
         const simulation = d3.forceSimulation(nodes)
             .force("link", d3.forceLink(links).id(d => d.id).distance(120))
@@ -117,7 +124,8 @@
             .data(links)
             .enter()
             .append("line")
-            .attr("stroke-width", 1.5);
+            .attr("stroke-width", 1.5)
+            .attr("marker-end", "url(#arrow)");
 
         // 🔵 Knoten-Layer
         const color = d => d.type === "APPLICATION" ? "#7c3aed" : "#4682b4";
@@ -132,6 +140,8 @@
             .attr("fill", color)
             .call(drag(simulation));
 
+
+
         // 🏷️ Labels
         const label = svg.append("g")
             .selectAll("text")
@@ -142,6 +152,36 @@
             .attr("font-size", 10)
             .attr("dx", 12)
             .attr("dy", ".35em");
+
+        // Klick auf Node → neuen Root laden
+        node.on("click", (event, d) => {
+            const comp = (d.label || "").split(":")[0]; // ersten Teil vor ":" nehmen
+            document.getElementById("root").value = comp;
+            loadGraph(); // lädt den Subgraph neu
+        });
+
+        // Nachbarschaft hervorheben (Hover)
+        const adj = new Map();
+        links.forEach(l => {
+            if (!adj.has(l.source)) adj.set(l.source, new Set());
+            if (!adj.has(l.target)) adj.set(l.target, new Set());
+            adj.get(l.source).add(l.target);
+            adj.get(l.target).add(l.source);
+        });
+
+        node.on("mouseover", (event, d) => {
+            const ns = adj.get(d.id) || new Set();
+            node.attr("opacity", n => (n.id === d.id || ns.has(n.id)) ? 1 : 0.2);
+            link.attr("opacity", l =>
+                (l.source.id === d.id || l.target.id === d.id
+                    || ns.has(l.source.id) || ns.has(l.target.id)) ? 0.9 : 0.1
+            );
+            label.attr("opacity", n => (n.id === d.id || ns.has(n.id)) ? 1 : 0.1);
+        }).on("mouseout", () => {
+            node.attr("opacity", 1);
+            link.attr("opacity", 0.6);
+            label.attr("opacity", 1);
+        });
 
         // 🪄 Simulation läuft (bei jedem Tick Positionen aktualisieren)
         simulation.on("tick", () => {

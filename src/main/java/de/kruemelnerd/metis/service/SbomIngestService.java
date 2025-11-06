@@ -7,7 +7,6 @@ import de.kruemelnerd.metis.repository.SbomVersionRepository;
 import org.cyclonedx.model.Bom;
 import org.cyclonedx.model.Component;
 import org.cyclonedx.model.Dependency;
-import org.cyclonedx.model.ExternalReference;
 import org.cyclonedx.parsers.BomParserFactory;
 import org.cyclonedx.parsers.Parser;
 import org.springframework.stereotype.Service;

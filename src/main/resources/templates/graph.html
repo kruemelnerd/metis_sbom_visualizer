@@ -47,10 +47,16 @@
     </form>
 </div>
 
-<div id="graph"></div>
+<div style="display:flex; gap:1rem;">
+    <div id="graph" style="flex:1"></div>
+    <aside id="details" style="width:320px; border-left:1px solid #ddd; padding-left:1rem;">
+        <em>Knoten anklicken…</em>
+        <div id="mini-graph" style="margin-top:1rem;"></div> <!-- ⬅ Platz für Mini-Graph -->
+    </aside>
+</div>
 
 <script>
-    function loadGraph(){
+    function loadGraph() {
         const root = document.getElementById('root').value.trim();
         const depth = document.getElementById('depth').value;
         const limit = document.getElementById('limit').value;
@@ -59,25 +65,24 @@
         url.searchParams.set('depth', depth);
         url.searchParams.set('limit', limit);
 
-        fetch(url).then(r=>r.json()).then(data=>{
+        fetch(url).then(r => r.json()).then(data => {
             // ---- Normalize: IDs als Strings, Links gegen Nodes prüfen
-            const nodes = (data.nodes || []).map(n => ({ ...n, id: String(n.id) }));
+            const nodes = (data.nodes || []).map(n => ({...n, id: String(n.id)}));
             const nodeIds = new Set(nodes.map(n => n.id));
 
             const links = (data.links || [])
-                .map(l => ({ source: String(l.source), target: String(l.target) }))
+                .map(l => ({source: String(l.source), target: String(l.target)}))
                 .filter(l => nodeIds.has(l.source) && nodeIds.has(l.target));
 
 
-
-            console.log(`RAW nodes=${(data.nodes||[]).length}, links=${(data.links||[]).length}`);
+            console.log(`RAW nodes=${(data.nodes || []).length}, links=${(data.links || []).length}`);
             console.log(`NORM nodes=${nodes.length}, links=${links.length}`);
-            console.log("nodes[0..2]:", nodes.slice(0,3));
-            console.log("links[0..2]:", links.slice(0,3));
+            console.log("nodes[0..2]:", nodes.slice(0, 3));
+            console.log("links[0..2]:", links.slice(0, 3));
 
-            draw({ nodes, links });
+            draw({nodes, links});
 
-        }).catch(err=>console.error(err));
+        }).catch(err => console.error(err));
     }
 
 
@@ -88,7 +93,7 @@
         loadGraph();
     }
 
-    function draw({ nodes, links }) {
+    function draw({nodes, links}) {
         const width = 1000;
         const height = 700;
 
@@ -141,7 +146,6 @@
             .call(drag(simulation));
 
 
-
         // 🏷️ Labels
         const label = svg.append("g")
             .selectAll("text")
@@ -153,11 +157,12 @@
             .attr("dx", 12)
             .attr("dy", ".35em");
 
-        // Klick auf Node → neuen Root laden
+        // click on node → show details
         node.on("click", (event, d) => {
-            const comp = (d.label || "").split(":")[0]; // ersten Teil vor ":" nehmen
-            document.getElementById("root").value = comp;
-            loadGraph(); // lädt den Subgraph neu
+            fetch(`/api/sbom/version/${d.id}`)
+                .then(r => r.json())
+                .then(res => showDetails(res))
+                .catch(e => console.error(e));
         });
 
         // Nachbarschaft hervorheben (Hover)
@@ -224,10 +229,43 @@
                 .on("drag", dragged)
                 .on("end", dragended);
         }
+
+        function showDetails(info) {
+            const panel = document.getElementById("details");
+            console.log(`details=${info.componentName}`);
+            if (!info || info.componentName == "?") {
+                panel.innerHTML = "<em>Keine Daten</em><div id='mini-graph' style='margin-top:1rem;'></div>";
+                return;
+            }
+
+            const deps = (info.data.depends || []).map(s => `<li>${s}</li>`).join("");
+            panel.innerHTML = `
+                <h3 style="margin:0">${info.data.componentName}</h3>
+                <div style="color:#666;margin-bottom:.5rem">${info.data.componentType}</div>
+                <p><strong>Version:</strong> ${info.data.version || "-"}</p>
+                <p><strong>PURL:</strong> ${info.data.purl || "-"}</p>
+                <p><strong>Dependencies:</strong></p>
+                <ul>${deps}</ul>
+                    <h4 style="margin-top:1rem;">Transitive Dependencies</h4>
+                   <pre id="dep-tree" style="background:#f9fafb;border:1px solid #eee;padding:.5rem;border-radius:6px;white-space:pre;"></pre>
+              `;
+
+            // Baum laden (Tiefe nach Wunsch)
+            fetch(`/api/sbom/tree?root=${encodeURIComponent(info.data.componentName)}&depth=5`)
+                .then(r => r.json())
+                .then(res => {
+                    const pre = document.getElementById('dep-tree');
+                    pre.textContent = (res.status === "ok") ? res.text : "Kein Baum gefunden.";
+                })
+                .catch(() => {
+                    const pre = document.getElementById('dep-tree');
+                    pre.textContent = "Fehler beim Laden des Baums.";
+                });
+        }
+
+
+
     }
-
-
-
 
 
     // initial

@@ -44,8 +44,8 @@ public class GraphApi {
                       WITH v,w,r LIMIT $limit
                       OPTIONAL MATCH (c1:SbomComponent)-[:HAS_VERSION]->(v)
                       OPTIONAL MATCH (c2:SbomComponent)-[:HAS_VERSION]->(w)
-                      RETURN id(v) AS sid, coalesce(c1.name,'?') AS sComp, v.label AS sVer, c1.type AS sType,
-                             id(w) AS tid, coalesce(c2.name,'?') AS tComp, w.label AS tVer, c2.type AS tType
+                      RETURN id(v) AS sid, coalesce(c1.name,'?') AS sComp, v.version AS sVer, c1.type AS sType,
+                             id(w) AS tid, coalesce(c2.name,'?') AS tComp, w.version AS tVer, c2.type AS tType
                     """;
 
 
@@ -66,8 +66,8 @@ public class GraphApi {
                     MATCH (tv:SbomVersion) WHERE id(tv)=tid
                     OPTIONAL MATCH (c1:SbomComponent)-[:HAS_VERSION]->(sv)
                     OPTIONAL MATCH (c2:SbomComponent)-[:HAS_VERSION]->(tv)
-                    WITH sid, coalesce(c1.name,'?') AS sComp, sv.label AS sVer, c1.type AS sType,
-                         tid, coalesce(c2.name,'?') AS tComp, tv.label AS tVer, c2.type AS tType
+                    WITH sid, coalesce(c1.name,'?') AS sComp, sv.version AS sVer, c1.type AS sType,
+                         tid, coalesce(c2.name,'?') AS tComp, tv.version AS tVer, c2.type AS tType
                     WITH DISTINCT sid, sComp, sVer, sType, tid, tComp, tVer, tType
                     LIMIT $limit
                     RETURN sid, sComp, sVer, sType, tid, tComp, tVer, tType
